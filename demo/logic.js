@@ -130,28 +130,42 @@ async function upload() {
     formData.append('file', file);
 
     try {
-        const response = await fetch('http://10.0.0.196:3000/upload', {
+        const response = await fetch('http://10.239.24.24:3000/upload', {
         method: 'POST',
         body: formData
         });
 
         const data = await response.json();
         const cid = data.cid;
-
-        document.getElementById('output').innerHTML = `Last CID uploaded: <a href="https://ipfs.io/ipfs/${cid}" target="_blank">${cid}</a>`;
+        document.getElementById('output').innerHTML = `Loading... <div id="loading"></div>`;
+        
         const accounts = await web3.eth.getAccounts();
         await contract.methods.uploadFile(cid).send({ from: accounts[0] });
-
-        alert('CID stored on blockchain!');
+        
+        document.getElementById('output').innerHTML = `Last CID uploaded to IPFS and stored in the blockchain: <a href="https://ipfs.io/ipfs/${cid}" target="_blank">${cid}</a>`;
     } catch (error) {
         console.error('Error:', error);
         document.getElementById('output').innerText = 'Upload failed.';
     }
 }
 
-async function showFiles() {
+async function showFiles({address=null, limit=null}) {
     const output = document.getElementById('fileList');
-    output.innerHTML = 'Loading files...';
+    if (limit === true) {
+        if (address === true) {
+
+            limit = document.getElementById('limitAddress').value;
+        } else {
+            limit = document.getElementById('limit').value;
+        }
+    }
+    if (address === true) {
+        address = document.getElementById('address').value;
+    }
+    if (address === null) {
+        address = '0x'
+    }
+    document.getElementById('output').innerHTML = 'Loading files...<div id="loading"></div>';
 
     try {
         const total = await contract.methods.getTotalFiles().call();
@@ -159,26 +173,40 @@ async function showFiles() {
         output.innerHTML = 'No files uploaded yet.';
         return;
         }
+        if (limit === null){
+            limit = Number(total)
+        }
 
-        let html = `<p>Total Files: ${total}</p><ul>`;
-        for (let i = 0; i < total; i++) {
+        let matches = [];
+
+        let html = ``;
+        for (let i = total-1; i >= 0 && matches.length < limit; i--) {
             const file = await contract.methods.getFile(i).call();
             const cid = file[0];
             const uploader = file[1];
             const timestamp = file[2];
+            console.log(i)
+            console.log("uploader:" + uploader)
+            console.log("address:" + address)
+            if ((address === '0x') || (uploader.toLowerCase() === address.toLowerCase())) {
+                matches.push(file);
+                console.log(address === null)
+                console.log((uploader.toLowerCase() === address.toLowerCase()))
+                const date = new Date(timestamp * 1000).toLocaleString();
+    
+                html += `<li>
+                    <a href="https://ipfs.io/ipfs/${cid}" target="_blank">${cid}</a><br>
+                    Uploaded by: ${uploader}<br>
+                    Date: ${date}
+                </li><br>`;
+            }
 
-        const date = new Date(timestamp * 1000).toLocaleString();
-
-        html += `<li>
-            <a href="https://ipfs.io/ipfs/${cid}" target="_blank">${cid}</a><br>
-            Uploaded by: ${uploader}<br>
-            Date: ${date}
-        </li><br>`;
         }
         html += '</ul>';
+        document.getElementById('output').innerHTML = `<p>${matches.length} files fetched.</p><ul>`;
         output.innerHTML = html;
     } catch (error) {
         console.error('Error retrieving files:', error);
-        output.innerHTML = 'Failed to load file list.';
+        output.innerHTML = 'Failed to load file list. Try connecting to MetaMask and reloading';
     }
 }

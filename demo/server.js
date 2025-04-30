@@ -24,5 +24,5 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log('🚀 Server running at http://10.0.0.196:3000');
+  console.log('🚀 Server running at http://10.239.24.24:3000');
 });

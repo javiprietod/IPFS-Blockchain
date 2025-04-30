@@ -3,17 +3,29 @@
 <head>
   <title>IPFS Upload + Ethereum</title>
   <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
-<link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Upload File to IPFS and Save CID to Blockchain</h1>
-  <input type="file" id="fileInput">
-  <button onclick="upload()">Upload</button>
-  <button onclick="showFiles()">Show Uploaded Files</button>
-    <div id="fileList"></div>
-
+  <div class="container">
+    <div id="upload">
+      <input type="file" id="fileInput">
+      <button onclick="upload()">Upload</button><br><br>
+      <button onclick="showFiles({limit: null})">Show All Uploaded Files</button>
+    </div>
+    <div id="showFilesLimit">
+      <input type="number" id="limit" placeholder="Number of files to show" min="0" value="5"><br>
+      <button onclick="showFiles({limit: true})">Show Last Uploaded Files</button>
+    </div>
+    <div id="showFilesAddress">
+      <input type="text" id="address" placeholder="Enter address"><br>
+      <input type="number" id="limitAddress" placeholder="Number of files to show" min="0" value="5"><br>
+      <button onclick="showFiles({address: true, limit: true})">Show Uploaded Files by address</button>
+    </div>
+  </div>
   <p id="output"></p>
-
+  <div id="fileList"></div>
+  
   <script src="logic.js"></script>
     
 </body>
