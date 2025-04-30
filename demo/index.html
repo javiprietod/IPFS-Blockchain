@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IPFS Upload + Ethereum</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Upload File to IPFS and Save CID to Blockchain</h1>
+  <input type="file" id="fileInput">
+  <button onclick="upload()">Upload</button>
+  <button onclick="showFiles()">Show Uploaded Files</button>
+    <div id="fileList"></div>
+
+  <p id="output"></p>
+
+  <script src="logic.js"></script>
+    
+</body>
+</html>
