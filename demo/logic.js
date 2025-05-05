@@ -130,7 +130,7 @@ async function upload() {
     formData.append('file', file);
 
     try {
-        const response = await fetch('http://10.239.24.24:3000/upload', {
+        const response = await fetch('http://10.0.0.196:3000/upload', {
         method: 'POST',
         body: formData
         });
