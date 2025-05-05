@@ -67,14 +67,24 @@ Make sure your IPFS daemon is running. If you have IPFS Desktop installed, you c
 ipfs daemon
 ```
 
-4. Start the backend server:
+4. Start the frontend:
 
 ```bash
-node server.js
+python3 -m http.server 8080
 ```
 
-The server will run on:  
-http://10.239.24.24:3000 (or update the IP in logic.js and server.js if needed)
+5. Start the backend server:
+
+```bash
+npm start
+```
+
+
+The server will run on:
+http://{Your IP address}:3000
+
+The frontend will run on:
+{Your IP address}:8080
 
 ---
 
@@ -89,35 +99,15 @@ http://10.239.24.24:3000 (or update the IP in logic.js and server.js if needed)
 
 ```js
 const contractAddress = 'YOUR_DEPLOYED_CONTRACT_ADDRESS';
+const contractABI = ['YOUR_DEPLOYED_CONTRACT_ABI']
 ```
 
 ---
 
 ## 🌐 Running the Frontend
 
-Simply open index.html in a web browser (served from public/ if desired).  
+After running the commmands in the terminals, open http://{Your IP address}:8080 in a web browser.  
 Ensure MetaMask is connected to the same network where you deployed the contract.
-
-You can:
-
-- Upload files
-- View all files uploaded
-- Filter uploads by address or limit
-
----
-
-## 📥 API Endpoint
-
-Your server exposes a single upload endpoint:
-
-```
-POST /upload
-Content-Type: multipart/form-data
-Body: file=<uploaded file>
-Response: { "cid": "<ipfs-hash>" }
-```
-
-Used by logic.js to obtain the IPFS hash and then store it via the contract.
 
 ---
 
